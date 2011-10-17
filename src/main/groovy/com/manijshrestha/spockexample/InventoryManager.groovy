@@ -8,4 +8,9 @@ class InventoryManager{
 		items.get(item)
 		}
 	
+	def gotTotalInventoryCount(){
+		def sum = 0
+		items.each{sum += it.value}
+		return sum
+	}
 }
