@@ -2,6 +2,8 @@ package com.manijshrestha.spockexample
 
 import spock.lang.Specification
 import com.manijshrestha.spockexample.InventoryManager
+import com.manijshrestha.spockexample.exception.OutOfStockException
+import com.manijshrestha.spockexample.exception.NotEnoughInventoryException
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,6 +29,30 @@ class InventoryManagerTest extends Specification{
 		
 		then:
 			inventoryManager.gotTotalInventoryCount() == 20
+	}
+	
+	def "throw exception when trying to checkout item out of stock"(){
+		when:
+			inventoryManager.items = ["droidx": 0]
+			inventoryManager.checkout("droidx", 1) // trying to buy droidx
+		then:
+			thrown(OutOfStockException)
+	}
+	
+	def "throw exception when trying to checkout more qty than avail"(){
+		when:
+			inventoryManager.items = ["led tv": 2]
+			inventoryManager.checkout("led tv", 3)
+		then:
+			thrown(NotEnoughInventoryException)
+	}
+	
+	def "reduces correct number of items"(){
+		when:
+			inventoryManager.items=["dvd" : 10]
+			inventoryManager.checkout("dvd", 7)
+		then:
+			inventoryManager.items.dvd == 3
 	}
 
 }
